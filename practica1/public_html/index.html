@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+
+<head>
+    <title>Ingreso</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/localization/messages_es.js"></script>
+    <script type="text/javascript" src="js/registro.js"></script>
+    <script type="text/javascript">
+        function validacion() {
+
+            $("#registro").validate({
+                rules: {
+                    correo: {
+                        required: true
+                    },
+                    clave: {
+                        required: true
+                    }
+
+                },
+                messages: {
+                    correo: {
+                        required: "Por favor, ingrese bien su cedula"
+                    },
+                    clave: {
+                        required: "Por favor, llene este campo"
+                    },
+                    submitHandler: function(form) {
+                        iniciar_sesion();
+                    }
+                }
+            });
+        }
+
+        function iniciar_sesion() {
+            var URL_SOAP = 'http://localhost/wsdl/index.php?wsdl';
+            var peticion = '<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">';
+            peticion += '<Body>';
+            peticion += '<iniciar_sesion xmlns="urn:server">';
+            peticion += '<usuario>' + $("#correo").val() + '</usuario>';
+            peticion += '<clave>' + $("#clave").val() + '</clave>';
+            peticion += '</iniciar_sesion>';
+            peticion += '</Body>';
+            peticion += '</Envelope>';
+            $.ajax({
+                url: URL_SOAP,
+                data: peticion,
+                type: 'POST',
+                dataType: 'xml',
+                contentType: 'text/xml',
+                success: function(data, textStatus, jqXHR) {
+                    if (jqXHR.status === '200') {
+                        var xml = jqXHR.responseXML;
+                        var xmlChange = $.parseXML(xml);
+                        var external = $(xml).text(xmlChange).find("external_id").text();
+                        var token = $(xml).text(xmlChange).find("token").text();
+                        var persona = $(xml).text(xmlChange).find("persona").text();
+                        localStorage["token"] = token;
+                        localStorage["user"] = persona;
+                        localStorage["external"] = external;
+                        location.href = "registroMedico.html";
+
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText);
+                    manejoErrores(jqXHR.responseText);
+                }
+            });
+        }
+        $(document).ready(function() {
+            validacion();
+        });
+    </script>
+</head>
+
+<body>
+    <br>
+    <br>
+
+    <br>
+
+    <div class="container">
+
+        <div class="mx-auto" style="width: 480px;">
+            <center>
+                <h1> Inicio sesion </h1>
+                <img src="/home/santy/Escritorio/serviciosWeb/public_html/imagenes/medicos.jpg" class="img-fluid" alt="Responsive image">
+            </center>
+
+            <form id="registro">
+                <div id="error"></div>
+                <div class="form-group">
+                    <label for="Usuario1">Usuario</label>
+                    <input type="email" class="form-control" id="correo" aria-describedby="usuarioHelp" placeholder="ejemplo@correo.com">
+
+                </div>
+                <div class="form-group">
+                    <label for="contraseña1">Contraseña</label>
+                    <input type="password" class="form-control" id="clave" placeholder="Contraseña">
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="Check1">Recuerdame</label>
+                </div>
+                <center>
+                    <button type="submit" class="btn btn-primary" id="ingreso" name="ingreso">Ingreso</button>
+                    <button type="submit" class="btn btn-primary" value="Registrar"><a href="registroMedico.html">Mi
+                                boton</a></button>
+                    <!--<input type="submit" class="btn btn-primary"  value="Registrarse" />-->
+                </center>
+
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

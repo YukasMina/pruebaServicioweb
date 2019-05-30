@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+
+<head>
+    <title>Inicio Sesión</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/inicio.css" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>-->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/localization/messages_es.js"></script>
+
+    <script type="text/javascript" src="../js/funciones.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            verificarInicioSesion();
+            cargarEspecialidades();
+            validar();
+            alert("");
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-form">
+            <div class="form-header">
+                <i class="fa fa-user"></i>
+                <div id="mensaje"></div>
+                <!--<div id="errorMensaje"></div>-->
+            </div>
+
+
+            <form id="login-form" method="post" class="form-signin" role="form">
+                <div class="input-group">
+                    <input name="email" id="email" type="email" class="form-control" placeholder="Correo electrónico" autofocus>
+                </div><br>
+                <div class="input-group">
+                    <input name="clave" id="clave" type="password" class="form-control" placeholder="Contraseña" />
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="submit" id="btningresar" data-loading-text="Iniciando....">Iniciar sesión</button>
+                </div>
+            </form>
+            <div class="form-footer">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <i class="fa fa-lock"></i>
+                        <a href="forget_password.php"> Olvidó su contraseña? </a>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <input class="btn btn-info" type="submit" id="btnregistro" data-toggle="modal" data-target="#ModalRegistro" value="Registrar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registro-->
+    <div class="container">
+        <div class="modal fade" id="ModalRegistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary"><i class="fa fa-user"></i>
+                        <h5 class="modal-title" id="exampleModalLabel">Registro </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <form id="idformulario" name="formulario">
+                        <div class="modal-body">
+                            <div id="error"></div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="cedula">Cedula</label>
+                                    <input type="text" name="txtcedula" id="txtcedula" class="form-control" placeholder="Cedula" maxlength="13" autofocus="autofocus" required="required" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="apellido">Apellidos</label>
+                                    <input type="text" name="txtapellido" id="txtapellido" class="form-control" placeholder="Apellidos" required="required" maxlength="25" />
+                                </div>
+
+                                <div class="form-group col">
+                                    <label for="nombre">Nombres</label>
+                                    <input type="text" name="txtnombre" id="txtnombre" class="form-control" placeholder="Nombres" required="" maxlength="25" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="registros">Registro</label>
+                                    <input type="text" name="txtregistro" id="txtregistro" class="form-control" placeholder="Registro" maxlength="12" required="" />
+                                </div>
+                                <!-- Columna dos -->
+                                <div class="form-group  col-md-4">
+                                    <label for="nombressaa">Especialidad</label>
+                                    <select class="form-control" data-style="btn-primary" name="especialidad" id="idespecialidad">
+                                            
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-5">
+                                    <label for="correo">Correo Electrónico</label>
+                                    <input type="email" name="txtcorreo" id="txtcorreo" class="form-control" placeholder="Correo Electrónico" maxlength="50" required="" />
+                                </div>
+                                <div class=" form-group col-md-5">
+                                    <label for="contrasenia">Contraseña</label>
+                                    <input type="password" name="txtclave" id="txtclave" class="form-control" placeholder="Contraseña" maxlength="25" required="" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

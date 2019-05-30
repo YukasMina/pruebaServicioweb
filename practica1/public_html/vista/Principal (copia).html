@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="es">
+
+<head>
+    <title>Pagina de Inicio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../css/inicio.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>-->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/localization/messages_es.js"></script>
+
+    <script type="text/javascript" src="../js/funciones.js"></script>
+    <script type="text/javascript" src="../js/scriptPaciente.js"></script>
+    <script>
+        $(document).ready(function() {
+            verificarNoInicioSesion();
+            console.log("Usuario: " + localStorage["usuario"]);
+            console.log("Token: " + localStorage["token"]);
+            console.log("External: " + localStorage["external"]);
+            var user = '<label >' + "Bienvenid@: " + localStorage["usuario"] + '</label>';
+            $("#navbardrop").html(user);
+            $("#salir").click(function() {
+                cerrar_sesion();
+            });
+            cargarPaciente();
+            validar();
+            $("#txtfechaNac").change(function() {
+                var edad = calcularEdad($("#txtfechaNac").val());
+                $("#txtedad").val(edad);
+            });
+
+            limpiarModal();
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-3">
+        <a class="navbar-brand" href="#"><i class="fa fa-sign-in-alt"></i></a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pacientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Reportes</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown ml-auto ">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown"> Bienbenido:</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Mi cuenta</a>
+                    <a class="dropdown-item" id="salir" href="#">salir</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!--contenido de la tabla-->
+    <div class="content">
+
+        <div class="col-md-1"></div>
+        <!-- <div class="d-flex p-2"> -->
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary ">
+                    <h4>Datos Paciente
+                        <button type="button" class="btn btn-success" title="Nuevo Paciente" data-toggle="modal" data-target="#ModalPaciente">Nuevo</button>
+                    </h4>
+
+                </div>
+                <!-- <div id="error"></div> -->
+                <div class="card-body">
+                    <table class="table" id="idtabla">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Cedula</th>
+                                <th scope="col">Nombre y Apellido</th>
+                                <th scope="col">Celular</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col">Edad</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <!--            <div class="card-footer"> <button class="btn btn-primary" type="submit">Aceptar</button></div>-->
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+
+    <div class="content">
+
+    </div>
+    <!-- Modal Registro-->
+    <div class="modal fade" id="ModalPaciente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title" id="exampleModalLabel">Nuevo Registro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <form id="idformModal" name="formulario">
+                    <input type="hidden" value="0" id="external" />
+                    <div class="modal-body">
+                        <div id="error"></div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="cedula">Cedula</label>
+                                    <input type="text" name="txtcedula" id="txtcedula" class="form-control" placeholder="Cedula" maxlength="10" autofocus="" required="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="apellido">Apellidos</label>
+                                <input type="text" name="txtapellido" id="txtapellido" class="form-control" placeholder="Apellidos" required="" />
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="nombre">Nombres</label>
+                                <input type="text" name="txtnombre" id="txtnombre" class="form-control" placeholder="Nombres" required="" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" name="txtdireccion" id="txtdireccion" class="form-control" placeholder="Dirección" required="" />
+                            </div>
+                            <div class=" form-group col">
+                                <label for="telefono">Telefono</label>
+                                <input type="tel" name="txttelefono" id="txttelefono" class="form-control" placeholder="Telefono" maxlength="10" pattern="\([0-9]{3}\) [0-9]{3}[ -][0-9]{4}" required="" />
+                            </div>
+                            <div class=" form-group col">
+                                <label for="celular">Celular</label>
+                                <input type="text" name="txtcelular" id="txtcelular" class="form-control" placeholder="Celular" maxlength="10" required="" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Columna dos -->
+                            <div class="form-group  col-md-3">
+                                <label for="fechaNac">Fecha de Nacimiento</label>
+                                <input type="date" name="txtfechaNac" id="txtfechaNac" class="form-control" required="" />
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="edad">Edad</label>
+                                <input type="text" name="txtedad" id="txtedad" class="form-control" placeholder="Edad" maxlength="2" required="" disabled/>
+                            </div>
+                            <!-- Columna uno -->
+                            <div class="form-group col-md-3">
+                                <label for="fomgenero">Genero</label>
+                                <select class="form-control" data-style="btn-primary" name="genero" id="genero">
+                                   <option value="1" >Masculino</option>
+                                   <option value="2" >Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="habito">Habitos</label>
+                                <textarea name="txthabito" id="txthabito" class="form-control" placeholder="Habitos" required=""></textarea>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="enfermedades">Enfermedades</label>
+                                <textarea name="txtenfermedad" id="txtenfermedad" class="form-control" placeholder="Enfermedades" required=""></textarea>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="edad">Enfermedad Eredadas</label>
+                                <textarea name="txteredada" id="txteredada" class="form-control" placeholder="Enfermedades Hederadas" required=""></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btncancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar</button>
+                        <button type="button" id="btnModificar" class="btn btn-success" value="" style="display: none" onclick="modificarPaciente(this)">Actualizar <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Historial-->
+    <div class="modal fade" id="modalHistorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title" id="exampleModalLabel">Historial Medico</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <form id="idformulariohisto" name="formulario">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="habito">Habitos</label>
+                                <textarea name="txthabito1" id="txthabito1" class="form-control" disabled=""></textarea>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="enfermedades">Enfermedades</label>
+                                <textarea name="txtenfermedad1" id="txtenfermedad1" class="form-control" disabled=""></textarea>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="edad">Enfermedad Eredadas</label>
+                                <textarea name="txteredada1" id="txteredada1" class="form-control" disabled=""></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <!-- <button type="button" class="btn btn-primary">Guardar</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container-fluid">
+            <p class="text-center">
+                Derechos Reservados &copy; 2019 <br> Sistema de Medico <a href="http://siaaf.unl.edu.ec">SEDD</a>
+                <br> Desarrollador Angel Minga
+                <br> Universidad Nacional de Loja <a target="blank" href="https://unl.edu.ec/">UNL</a>
+                <br> Sugerencias al correo <a href="yukasmina@gmail.com">yukasmina@gmail.com</a>
+            </p>
+        </div>
+    </footer>
+    <!-- /Footer -->
+</body>
+
+</html>
